@@ -1,0 +1,64 @@
+#include <iostream> 
+
+// Déclaration de la classe de base A.
+class A
+{
+protected:
+    void f()
+    {
+        std::cout << "A::f()\n";
+    }
+
+public:
+    void g()
+    {
+        std::cout << "A::g()\n";
+    }
+};
+
+// Déclaration de la classe B héritant de A.
+class B : public A
+{
+public:
+    using A::f; // rend public A::f()
+};
+
+// Déclaration de la classe C héritant de A.
+class C: public A
+{
+public:
+    void g(int Val) // masque A::g()
+    {
+        std::cout << "C::g(int)\n";
+    }
+};
+
+// Déclaration de la classe D héritant de A.
+class D: public A
+{
+public:
+    void g(int Val) // masque A::g()
+    {
+        std::cout << "D::g(int)";
+    }
+    using A::g;      // démasque A::g()
+};
+
+int main()
+{
+    A a;
+    B b;
+    C c;
+    D d;
+
+    // a.f();  // impossible car f est protégé dans A
+    a.g();
+
+    b.f();  // possible car A::f est publique dans B.
+
+    // c.g();  // impossible car A::g() est masquée par C::g(int) dans C
+    c.g(6); // possible car C::g(int Val) est masquée par C::g(int) dans C
+
+    d.g();  // possible car A::g() est démasquée dans D
+    d.g(5); // possible car D::g() est démasquée dans D
+}
